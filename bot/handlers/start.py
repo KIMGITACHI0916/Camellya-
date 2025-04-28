@@ -9,21 +9,29 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
-    photo = InputFile("/full/path/to/IMG_20250427_025638.jpg")
+    try:
+        photo = InputFile("IMG_20250427_025638.jpg")  # No /full/path/to/, just correct path
 
-    caption = (
-        "*✨ HELLO... ✨*\n\n"
-        "*I'M A CHARACTER SNATCH BOT!*\n\n"
-        "➤ Add me to your group and I will send random characters!\n\n"
-        "➤ Tap 'Help' to see all available commands.\n\n"
-        "_Let's make your group more fun!_\n\n"
-        "`➛ PING:` 1.00 ms\n"
-        "`➛ UPTIME:` 0h 0m 0s"
-    )
+        caption = (
+            "*✨ HELLO... ✨*\n\n"
+            "*I'M A CHARACTER SNATCH BOT!*\n\n"
+            "➤ Add me to your group and I will send random characters!\n\n"
+            "➤ Tap 'Help' to see all available commands.\n\n"
+            "_Let's make your group more fun!_\n\n"
+            "`➛ PING:` 1.00 ms\n"
+            "`➛ UPTIME:` 0h 0m 0s"
+        )
 
-    await update.message.reply_photo(
-        photo=photo,
-        caption=caption,
-        parse_mode="Markdown",
-        reply_markup=reply_markup
-    )
+        await update.message.reply_photo(
+            photo=photo,
+            caption=caption,
+            parse_mode="Markdown",
+            reply_markup=reply_markup
+        )
+    except Exception as e:
+        await update.message.reply_text(
+            text="*✨ HELLO... ✨*\n\nUnable to load image.\n\n" + str(e),
+            parse_mode="Markdown",
+            reply_markup=reply_markup
+        )
+        
