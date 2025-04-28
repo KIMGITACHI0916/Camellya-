@@ -9,7 +9,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
-    photo = InputFile("IMG_20250427_025638.jpg")  # Your anime image
+    photo = InputFile("/full/path/to/IMG_20250427_025638.jpg")
 
     caption = (
         "*✨ HELLO... ✨*\n\n"
