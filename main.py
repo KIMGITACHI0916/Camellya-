@@ -19,7 +19,7 @@ bot = Client(
 )
 
 # Register handlers
-start.register(bot)
+application.add_handler(CommandHandler("start", start))
 
 # Start the bot
 if __name__ == "__main__":
