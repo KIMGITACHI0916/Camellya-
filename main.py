@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from pyrogram import Client
-from Bot.handlers import start
+from bot.handlers import start
 
 # Load .env variables
 load_dotenv()
