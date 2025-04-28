@@ -1,15 +1,14 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, InputFile
 from telegram.ext import Application, CommandHandler, ContextTypes
 
-# Your /start command function
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         [InlineKeyboardButton("➕ Add to Your Group", url=f"https://t.me/{context.bot.username}?startgroup=true")],
         [InlineKeyboardButton("❓ Help", callback_data="help")]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    
-    photo = InputFile("IMG_20250427_025638.jpg")  # Your selected anime image
+
+    photo = InputFile("IMG_20250427_025638.jpg")
 
     caption = (
         "*✨ HELLO... ✨*\n\n"
@@ -28,21 +27,13 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=reply_markup
     )
 
-# Main function to run bot
 async def main():
-    # Create Application
     app = Application.builder().token("7968316763:AAFbirkPbHvEqTJWM8l-SJaDuofQnvf_DS0").build()
 
-    # Add command handler
     app.add_handler(CommandHandler("start", start))
 
-    # Start polling
-    await app.start()
-    await app.updater.start_polling()
-    await app.updater.idle()
+    await app.run_polling()  # <-- only this is needed!
 
-# Entry point
 if __name__ == "__main__":
     import asyncio
     asyncio.run(main())
-    
