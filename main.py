@@ -1,13 +1,9 @@
 from telegram.ext import Application, CommandHandler
-from bot.handlers.start import start  # Correct path
+from bot.handlers.start import start
 
-async def main():
-    app = Application.builder().token("7968316763:AAFbirkPbHvEqTJWM8l-SJaDuofQnvf_DS0").build()
+app = Application.builder().token("YOUR_BOT_TOKEN").build()
 
-    app.add_handler(CommandHandler("start", start))
-
-    await app.run_polling()
+app.add_handler(CommandHandler("start", start))
 
 if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
+    app.run_polling()
