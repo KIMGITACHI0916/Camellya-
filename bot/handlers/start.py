@@ -1,6 +1,7 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, InputFile
-from telegram.ext import CommandHandler, ContextTypes
+from telegram.ext import Application, CommandHandler, ContextTypes
 
+# Your /start command function
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         [InlineKeyboardButton("➕ Add to Your Group", url=f"https://t.me/{context.bot.username}?startgroup=true")],
@@ -26,3 +27,22 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode="Markdown",
         reply_markup=reply_markup
     )
+
+# Main function to run bot
+async def main():
+    # Create Application
+    app = Application.builder().token("YOUR_BOT_TOKEN_HERE").build()
+
+    # Add command handler
+    app.add_handler(CommandHandler("start", start))
+
+    # Start polling
+    await app.start()
+    await app.updater.start_polling()
+    await app.updater.idle()
+
+# Entry point
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())
+    
