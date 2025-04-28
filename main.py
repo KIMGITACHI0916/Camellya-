@@ -1,26 +1,14 @@
-import os
-from dotenv import load_dotenv
-from pyrogram import Client
-from bot.handlers import start
+from telegram.ext import Application, CommandHandler
 
-# Load .env variables
-load_dotenv()
+from bot.handlers.start import start  # or your correct import path
 
-API_ID = int(os.getenv("API_ID"))
-API_HASH = os.getenv("API_HASH")
-BOT_TOKEN = os.getenv("BOT_TOKEN")
+async def main():
+    app = Application.builder().token("7968316763:AAFbirkPbHvEqTJWM8l-SJaDuofQnvf_DS0").build()
 
-# Initialize the bot
-bot = Client(
-    "TelegramManagementBot",
-    api_id=API_ID,
-    api_hash=API_HASH,
-    bot_token=BOT_TOKEN
-)
+    app.add_handler(CommandHandler("start", start))
 
-# Register handlers
-application.add_handler(CommandHandler("start", start))
+    await app.run_polling()
 
-# Start the bot
 if __name__ == "__main__":
-    bot.run()
+    import asyncio
+    asyncio.run(main())
