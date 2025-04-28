@@ -29,11 +29,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def main():
     app = Application.builder().token("7968316763:AAFbirkPbHvEqTJWM8l-SJaDuofQnvf_DS0").build()
-
     app.add_handler(CommandHandler("start", start))
-
-    await app.run_polling()  # <-- only this is needed!
-
+    await app.run_polling()
+    
 if __name__ == "__main__":
     import asyncio
     asyncio.run(main())
