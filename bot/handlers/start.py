@@ -13,7 +13,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "🔧 *I'm your Group Management Assistant.*\n\n"
         "➤ Add me to your group to unlock powerful moderation and management features.\n"
         "➤ Tap *Help* below to view all available commands.\n\n"
-        "⚡ *Fast • Secure • Reliable*"
     )
 
     image_url = "https://i.imgur.com/h0LhYD3.jpeg"
