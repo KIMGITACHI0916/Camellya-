@@ -1,5 +1,5 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, InputFile
-from telegram.ext import CommandHandler, ContextTypes
+from telegram import CommandHandler, ContextTypes
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
