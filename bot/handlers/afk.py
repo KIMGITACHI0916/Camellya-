@@ -1,6 +1,7 @@
 # bot/handlers/afk.py
 
-from telegram import Update, ChatAction
+from telegram import Update
+from telegram.constants import ChatAction
 from telegram.ext import ContextTypes, MessageHandler, filters, CommandHandler
 from pymongo import MongoClient
 
