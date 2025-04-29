@@ -10,7 +10,7 @@ BAD_LINK_PATTERNS = [
 ]
 
 async def check_nsfw_image(file_url: str) -> bool:
-    api_key = "YOUR_DEEPAI_API_KEY"
+    api_key = "c4d2e8ee-987b-48e0-ae51-9f4e81a42152"
     async with aiohttp.ClientSession() as session:
         async with session.post(
             "https://api.deepai.org/api/nsfw-detector",
