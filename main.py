@@ -1,7 +1,7 @@
 # main.py
 import asyncio
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler
-from handlers.start import start
+from bot.handlers.start import start
 from handlers.help import help_command
 from handlers.afk import set_afk, check_afk
 from handlers.welcome import welcome_handler, goodbye_handler
