@@ -3,6 +3,8 @@ from telegram.ext import CommandHandler, ContextTypes
 from utils.permissions import is_admin
 from utils.database import warn_user
 
+from bot.utils.permissions import is_admin
+
 async def sban(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not await is_admin(update):
         return
