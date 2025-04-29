@@ -1,7 +1,7 @@
 import asyncio
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters
 from bot.handlers.start import start
-from bot.handlers.help import help_command
+from bot.handlers.help import get_help_handlers
 from bot.handlers import afk
 from bot.handlers.welcome import welcome_handler, goodbye_handler
 from bot.handlers.filters import add_filter, remove_filter, check_filter
@@ -29,26 +29,33 @@ async def main():
     for handler in afk.get_afk_handlers():
         app.add_handler(handler)
 
-    # Commands
+    # Start & Help
     app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("help", help_command))
+    for handler in get_help_handlers():
+        app.add_handler(handler)  # Includes /help and button callback support
+
+    # Silent Commands
     app.add_handler(CommandHandler("sban", sban))
     app.add_handler(CommandHandler("smute", smute))
     app.add_handler(CommandHandler("skick", skick))
     app.add_handler(CommandHandler("swarn", swarn))
+
+    # Temporary Commands
     app.add_handler(CommandHandler("tban", tban))
     app.add_handler(CommandHandler("tmute", tmute))
     app.add_handler(CommandHandler("tkick", tkick))
+
+    # Filters
     app.add_handler(CommandHandler("addfilter", add_filter))
     app.add_handler(CommandHandler("removefilter", remove_filter))
+    app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), check_filter))
+
+    # Utility Commands
     app.add_handler(CommandHandler("tagall", tag_all))
     app.add_handler(CommandHandler("lock", lock))
     app.add_handler(CommandHandler("unlock", unlock))
 
-    # Callback handler
-    app.add_handler(CallbackQueryHandler(help_command))
-
-    # NSFW and Edit filters applied to all incoming messages
+    # NSFW and Anti-Edit filters
     app.add_handler(MessageHandler(filters.ALL & ~filters.StatusUpdate.ALL, anti_nsfw_filter))
     app.add_handler(MessageHandler(filters.ALL & ~filters.StatusUpdate.ALL, anti_edit_filter))
 
