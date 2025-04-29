@@ -21,14 +21,13 @@ db = client['moderation_bot']
 async def main():
     app = Application.builder().token(TOKEN).build()
 
-    from bot.handlers import afk
+    # Register AFK handlers (this imports set_afk, check_afk from bot.handlers.afk)
     for handler in afk.get_afk_handlers():
-    app.add_handler(handler)
+        app.add_handler(handler)
 
     # Commands
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("help", help_command))
-    app.add_handler(CommandHandler("afk", set_afk))
     app.add_handler(CommandHandler("sban", sban))
     app.add_handler(CommandHandler("smute", smute))
     app.add_handler(CommandHandler("skick", skick))
@@ -44,10 +43,9 @@ async def main():
 
     # Messages
     app.add_handler(CallbackQueryHandler(help_command))
-    app.add_handler(CommandHandler("", check_afk))
-    app.add_handler(CommandHandler("", check_filter))
-    app.add_handler(CommandHandler("", anti_nsfw_filter))
-    app.add_handler(CommandHandler("", anti_edit_filter))
+    app.add_handler(CommandHandler("", check_filter))  # This line is not doing anything useful
+    app.add_handler(CommandHandler("", anti_nsfw_filter))  # Same here
+    app.add_handler(CommandHandler("", anti_edit_filter))  # And here
 
     # Welcome/Leave
     app.add_handler(welcome_handler)
@@ -58,3 +56,4 @@ async def main():
 
 if __name__ == '__main__':
     asyncio.run(main())
+    
