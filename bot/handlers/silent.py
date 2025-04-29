@@ -1,6 +1,6 @@
 from telegram import Update
 from telegram.ext import CommandHandler, ContextTypes
-from utils.permissions import is_admin
+from bot.utils.permissions import is_admin
 from utils.database import warn_user
 
 from bot.utils.permissions import is_admin
