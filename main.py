@@ -2,7 +2,7 @@
 import asyncio
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler
 from bot.handlers.start import start
-from handlers.help import help_command
+from bot.handlers.help import help_command
 from handlers.afk import set_afk, check_afk
 from handlers.welcome import welcome_handler, goodbye_handler
 from handlers.filters import add_filter, remove_filter, check_filter
