@@ -1,48 +1,39 @@
-import re
-import aiohttp
-from telegram import Message
-from bot.utils.database import is_user_admin  # Make sure this exists
+# bot/utils/anti_nsfw.py
+import requests
+from telegram import Update
+from telegram.ext import ContextTypes
 
-# Add common adult keywords or domains
-BAD_LINK_PATTERNS = [
-    r"(porn|xxx|sex|hentai|xvideos|xnxx|redtube|onlyfans|nude|nsfw)",
-    r"(https?:\/\/)?(www\.)?(pornhub|xhamster|rule34|erome|onlyfans|nsfw)\.com",
-]
+DEEPAI_API_KEY = "c4d2e8ee-987b-48e0-ae51-9f4e81a42152"  # Replace this with your actual key
 
-async def check_nsfw_image(file_url: str) -> bool:
-    api_key = "c4d2e8ee-987b-48e0-ae51-9f4e81a42152"
-    async with aiohttp.ClientSession() as session:
-        async with session.post(
+async def anti_nsfw_filter(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user
+    message = update.effective_message
+
+    # Skip admin messages
+    if user and user.id in context.bot_data.get("approved_admins", []):
+        return
+
+    # Handle media
+    if message.photo or message.video or message.document or message.sticker:
+        file = message.photo[-1] if message.photo else (
+            message.video or message.document or message.sticker
+        )
+        file_path = await file.get_file()
+        file_bytes = await file_path.download_as_bytearray()
+
+        response = requests.post(
             "https://api.deepai.org/api/nsfw-detector",
-            data={'image': file_url},
-            headers={'api-key': api_key}
-        ) as resp:
-            data = await resp.json()
-            score = data.get("output", {}).get("nsfw_score", 0)
-            return score > 0.7
+            files={"image": file_bytes},
+            headers={"api-key": DEEPAI_API_KEY}
+        )
 
-async def is_nsfw_message(message: Message, bot) -> bool:
-    # Admin bypass check
-    chat_id = message.chat_id
-    user_id = message.from_user.id
-    if await is_user_admin(chat_id, user_id):
-        return False
+        if response.ok and response.json().get("output", {}).get("nsfw_score", 0) > 0.7:
+            await message.delete()
+            return
 
-    # Text-based porn link check
+    # Handle links
     if message.text:
-        for pattern in BAD_LINK_PATTERNS:
-            if re.search(pattern, message.text, re.IGNORECASE):
-                return True
-
-    # Image/Video/Sticker NSFW check
-    media = message.photo or message.video or message.sticker
-    if media:
-        try:
-            file = await media[-1].get_file() if isinstance(media, list) else await media.get_file()
-            file_url = file.file_path
-            return await check_nsfw_image(file_url)
-        except:
-            return True  # Fail safe: delete if error occurs
-
-    return False
-  
+        keywords = ["porn", "sex", "xxx", "nsfw", "xvideos", "redtube", "xnxx"]
+        if any(word in message.text.lower() for word in keywords):
+            await message.delete()
+            
