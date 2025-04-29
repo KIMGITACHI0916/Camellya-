@@ -8,7 +8,7 @@ from bot.handlers.welcome import welcome_handler, goodbye_handler
 from bot.handlers.filters import add_filter, remove_filter, check_filter
 from bot.handlers.silent import sban, smute, skick, swarn
 from bot.handlers.temp import tban, tmute, tkick
-from bot.handlers.utils import tag_all, lock, unlock
+from bot.utils.permissions import is_admin
 from middlewares.anti_nsfw import anti_nsfw_filter
 from middlewares.anti_edit import anti_edit_filter
 from pymongo import MongoClient
