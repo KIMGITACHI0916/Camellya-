@@ -4,11 +4,11 @@ from telegram.ext import Application, CommandHandler, CallbackQueryHandler
 from bot.handlers.start import start
 from bot.handlers.help import help_command
 from bot.handlers import afk
-from handlers.welcome import welcome_handler, goodbye_handler
-from handlers.filters import add_filter, remove_filter, check_filter
-from handlers.silent import sban, smute, skick, swarn
-from handlers.temp import tban, tmute, tkick
-from handlers.utils import tag_all, lock, unlock
+from bot.handlers.welcome import welcome_handler, goodbye_handler
+from bot.handlers.filters import add_filter, remove_filter, check_filter
+from bot.handlers.silent import sban, smute, skick, swarn
+from bot.handlers.temp import tban, tmute, tkick
+from bot.handlers.utils import tag_all, lock, unlock
 from middlewares.anti_nsfw import anti_nsfw_filter
 from middlewares.anti_edit import anti_edit_filter
 from pymongo import MongoClient
