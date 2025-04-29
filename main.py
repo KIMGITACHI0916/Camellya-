@@ -21,6 +21,10 @@ db = client['moderation_bot']
 async def main():
     app = Application.builder().token(TOKEN).build()
 
+    from bot.handlers import afk
+    for handler in afk.get_afk_handlers():
+    app.add_handler(handler)
+
     # Commands
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("help", help_command))
