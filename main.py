@@ -66,21 +66,16 @@ async def main():
         await app.shutdown()
 
 if __name__ == '__main__':
-    import sys
+    import asyncio
 
-    if sys.platform.startswith('win') or sys.platform == "linux":
-        try:
-            asyncio.run(main())
-        except RuntimeError as e:
-            if "already running" in str(e):
-                loop = asyncio.get_event_loop()
-                loop.create_task(main())
-                loop.run_forever()
-            else:
-                raise
-    else:
-        # For environments like notebooks or async platforms
-        loop = asyncio.get_event_loop()
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        loop = None
+
+    if loop and loop.is_running():
+        print("Detected running loop — using create_task.")
         loop.create_task(main())
-        loop.run_forever()
-        
+    else:
+        print("No running loop — using asyncio.run().")
+        asyncio.run(main())
