@@ -66,7 +66,7 @@ async def main():
     print("Bot is running...")
     await app.run_polling()
 
-if if __name__ == '__main__':
+if __name__ == '__main__':
     import asyncio
     try:
         asyncio.run(main())
