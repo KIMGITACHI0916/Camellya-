@@ -20,8 +20,7 @@ db = client['moderation_bot']
 
 async def main():
     app = Application.builder().token(TOKEN).build()
-
-    app.bot_data["approved_admins"] = [123456789]  # Replace this
+    app.bot_data["approved_admins"] = [123456789]  # Replace with real admin user IDs
 
     # Register all handlers
     app.add_handler(CommandHandler("start", start))
@@ -53,10 +52,18 @@ async def main():
     app.add_handler(welcome_handler)
     app.add_handler(goodbye_handler)
 
-    print("Bot is running...")
+    print("Bot is initializing...")
     await app.initialize()
     await app.start()
-    await app.run_polling()  # This replaces `idle()` in PTB v20+
+    print("Bot is running...")
+
+    try:
+        await app.run_polling()
+    except asyncio.CancelledError:
+        print("Polling was cancelled. Shutting down...")
+    finally:
+        await app.stop()
+        await app.shutdown()
 
 if __name__ == '__main__':
     asyncio.run(main())
