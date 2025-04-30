@@ -1,6 +1,13 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes, CallbackQueryHandler, CommandHandler
+from telegram import ChatMember
 
+async def is_user_admin(update, context):
+    user_id = update.effective_user.id
+    chat_id = update.effective_chat.id
+    member = await context.bot.get_chat_member(chat_id, user_id)
+    return member.status in [ChatMember.ADMINISTRATOR, ChatMember.OWNER]
+    
 HELP_CATEGORIES = {
     "admin": "Commands to manage admins.",
     "bans": "Ban, kick, and mute users.",
