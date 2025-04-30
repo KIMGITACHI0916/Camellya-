@@ -13,7 +13,7 @@ from bot.utils.anti_edit import anti_edit_filter
 from pymongo import MongoClient
 from telegram.ext import CommandHandler, MessageHandler, filters
 
-TOKEN = "7968316763:AAFbirkPbHvEqTJWM8l-SJaDuofQnvf_DS0"
+TOKEN = "7968316763:AAH5XsSeWaQOucSKHQdYQ9M6HVijFnanOJA"
 MONGO_URI = "mongodb+srv://pop300k:tE4m7yVI6DNtXWsk@cluster0.y3knwm0.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 client = MongoClient(MONGO_URI)
 db = client['moderation_bot']
