@@ -1,4 +1,5 @@
 import asyncio
+import nest_asyncio  # NEW
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters
 from bot.handlers.start import start
 from bot.handlers.help import get_help_handlers
@@ -67,8 +68,6 @@ async def main():
     await app.run_polling()
 
 if __name__ == '__main__':
-    import asyncio
-
-if __name__ == '__main__':
-    asyncio.get_event_loop().run_until_complete(main())
+    nest_asyncio.apply()  # Enable nested event loop support
+    asyncio.run(main())
     
