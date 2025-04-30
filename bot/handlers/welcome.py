@@ -1,19 +1,16 @@
 from telegram import Update
-from telegram.ext import ContextTypes
+from telegram.ext import ContextTypes, MessageHandler, filters
 
-async def welcome_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.message and update.message.new_chat_members:
-        for member in update.message.new_chat_members:
-            await update.message.reply_text(
-                f"Hey {member.mention_html()}, welcome to the group! "
-                "Feel free to introduce yourself and jump into the conversation. "
-                "We're glad to have you here!",
-                parse_mode="HTML"
-            )
+# Welcome function
+async def welcome(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    for member in update.message.new_chat_members:
+        await update.message.reply_text(f"Welcome, {member.mention_html()}!", parse_mode='HTML')
 
-async def goodbye_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.message and update.message.left_chat_member:
-        await update.message.reply_text(
-            f"We’ll miss you, {update.message.left_chat_member.full_name}. "
-            "Hope to see you again someday. The group won’t be the same without you!"
-        )
+# Goodbye function
+async def goodbye(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    left_member = update.message.left_chat_member
+    await update.message.reply_text(f"{left_member.full_name} has left the chat.")
+
+# Handlers
+welcome_handler = MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome)
+goodbye_handler = MessageHandler(filters.StatusUpdate.LEFT_CHAT_MEMBER, goodbye)
