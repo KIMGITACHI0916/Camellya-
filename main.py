@@ -1,5 +1,5 @@
 import asyncio
-from telegram.ext import Application
+from telegram.ext import Application, CommandHandler, MessageHandler, filters
 from bot.handlers.start import start
 from bot.handlers.help import get_help_handlers
 from bot.handlers import afk
@@ -11,7 +11,6 @@ from bot.handlers.utils import tag_all, lock, unlock
 from bot.utils.anti_nsfw import anti_nsfw_filter
 from bot.utils.anti_edit import anti_edit_filter
 from pymongo import MongoClient
-from telegram.ext import CommandHandler, MessageHandler, filters
 
 TOKEN = "7968316763:AAH5XsSeWaQOucSKHQdYQ9M6HVijFnanOJA"
 MONGO_URI = "mongodb+srv://pop300k:tE4m7yVI6DNtXWsk@cluster0.y3knwm0.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
@@ -22,7 +21,7 @@ async def main():
     app = Application.builder().token(TOKEN).build()
     app.bot_data["approved_admins"] = [123456789]  # Replace with real admin user IDs
 
-    # Register all handlers
+    # Register handlers
     app.add_handler(CommandHandler("start", start))
     for handler in get_help_handlers():
         app.add_handler(handler)
@@ -55,27 +54,22 @@ async def main():
     print("Bot is initializing...")
     await app.initialize()
     await app.start()
+    await app.updater.start_polling()
     print("Bot is running...")
 
-    try:
-        await app.run_polling()
-    except asyncio.CancelledError:
-        print("Polling was cancelled. Shutting down...")
-    finally:
-        await app.stop()
-        await app.shutdown()
+    # Keeps the bot running
+    await asyncio.Event().wait()
 
 if __name__ == '__main__':
-    import asyncio
-
     try:
         loop = asyncio.get_running_loop()
     except RuntimeError:
         loop = None
 
     if loop and loop.is_running():
-        print("Detected running loop — using create_task.")
+        print("Detected running event loop — using create_task.")
         loop.create_task(main())
     else:
         print("No running loop — using asyncio.run().")
         asyncio.run(main())
+        
