@@ -1,5 +1,3 @@
-import asyncio
-import nest_asyncio  # NEW
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters
 from bot.handlers.start import start
 from bot.handlers.help import get_help_handlers
@@ -9,10 +7,14 @@ from bot.handlers.filters import add_filter, remove_filter, check_filter
 from bot.handlers.silent import sban, smute, skick, swarn
 from bot.handlers.temp import tban, tmute, tkick
 from bot.handlers.utils import tag_all, lock, unlock
-from bot.utils.permissions import is_admin
 from bot.utils.anti_nsfw import anti_nsfw_filter
 from bot.utils.anti_edit import anti_edit_filter
 from pymongo import MongoClient
+import asyncio
+import nest_asyncio
+
+# Prevent event loop conflicts
+nest_asyncio.apply()
 
 # MongoDB setup
 TOKEN = "7968316763:AAFbirkPbHvEqTJWM8l-SJaDuofQnvf_DS0"
@@ -23,51 +25,44 @@ db = client['moderation_bot']
 async def main():
     app = Application.builder().token(TOKEN).build()
 
-    # Optional: Add approved admin IDs for NSFW bypass
-    app.bot_data["approved_admins"] = [123456789, 987654321]  # Replace with real Telegram IDs
+    app.bot_data["approved_admins"] = [123456789]  # Replace with real admin IDs
 
-    # Register AFK handlers
     for handler in afk.get_afk_handlers():
         app.add_handler(handler)
 
-    # Start & Help
     app.add_handler(CommandHandler("start", start))
     for handler in get_help_handlers():
-        app.add_handler(handler)  # Includes /help and button callback support
+        app.add_handler(handler)
 
-    # Silent Commands
     app.add_handler(CommandHandler("sban", sban))
     app.add_handler(CommandHandler("smute", smute))
     app.add_handler(CommandHandler("skick", skick))
     app.add_handler(CommandHandler("swarn", swarn))
 
-    # Temporary Commands
     app.add_handler(CommandHandler("tban", tban))
     app.add_handler(CommandHandler("tmute", tmute))
     app.add_handler(CommandHandler("tkick", tkick))
 
-    # Filters
     app.add_handler(CommandHandler("addfilter", add_filter))
     app.add_handler(CommandHandler("removefilter", remove_filter))
-    app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), check_filter))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, check_filter))
 
-    # Utility Commands
     app.add_handler(CommandHandler("tagall", tag_all))
     app.add_handler(CommandHandler("lock", lock))
     app.add_handler(CommandHandler("unlock", unlock))
 
-    # NSFW and Anti-Edit filters
     app.add_handler(MessageHandler(filters.ALL & ~filters.StatusUpdate.ALL, anti_nsfw_filter))
     app.add_handler(MessageHandler(filters.ALL & ~filters.StatusUpdate.ALL, anti_edit_filter))
 
-    # Welcome / Leave
     app.add_handler(welcome_handler)
     app.add_handler(goodbye_handler)
 
     print("Bot is running...")
-    await app.run_polling()
+    await app.initialize()
+    await app.start()
+    await app.updater.start_polling()
+    await app.updater.idle()
 
 if __name__ == '__main__':
-    nest_asyncio.apply()  # Enable nested event loop support
     asyncio.run(main())
     
