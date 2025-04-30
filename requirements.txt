@@ -5,3 +5,4 @@ python-telegram-bot==20.8
 pymongo
 pymongo[srv]
 requests
+nest_asyncio
