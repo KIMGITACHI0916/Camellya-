@@ -1,4 +1,5 @@
-from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters
+import asyncio
+from telegram.ext import Application
 from bot.handlers.start import start
 from bot.handlers.help import get_help_handlers
 from bot.handlers import afk
@@ -10,13 +11,8 @@ from bot.handlers.utils import tag_all, lock, unlock
 from bot.utils.anti_nsfw import anti_nsfw_filter
 from bot.utils.anti_edit import anti_edit_filter
 from pymongo import MongoClient
-import asyncio
-import nest_asyncio
+from telegram.ext import CommandHandler, MessageHandler, filters
 
-# Prevent event loop conflicts
-nest_asyncio.apply()
-
-# MongoDB setup
 TOKEN = "7968316763:AAFbirkPbHvEqTJWM8l-SJaDuofQnvf_DS0"
 MONGO_URI = "mongodb+srv://pop300k:tE4m7yVI6DNtXWsk@cluster0.y3knwm0.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 client = MongoClient(MONGO_URI)
@@ -25,13 +21,13 @@ db = client['moderation_bot']
 async def main():
     app = Application.builder().token(TOKEN).build()
 
-    app.bot_data["approved_admins"] = [123456789]  # Replace with real admin IDs
+    app.bot_data["approved_admins"] = [123456789]  # Replace this
 
-    for handler in afk.get_afk_handlers():
-        app.add_handler(handler)
-
+    # Register all handlers
     app.add_handler(CommandHandler("start", start))
     for handler in get_help_handlers():
+        app.add_handler(handler)
+    for handler in afk.get_afk_handlers():
         app.add_handler(handler)
 
     app.add_handler(CommandHandler("sban", sban))
@@ -60,8 +56,7 @@ async def main():
     print("Bot is running...")
     await app.initialize()
     await app.start()
-    await app.updater.start_polling()
-    await app.updater.idle()
+    await app.run_polling()  # This replaces `idle()` in PTB v20+
 
 if __name__ == '__main__':
     asyncio.run(main())
