@@ -5,11 +5,7 @@ from bot.handlers.help import get_help_handlers
 from bot.handlers import afk
 from bot.handlers.welcome import welcome_handler, goodbye_handler
 from bot.handlers.filters import add_filter, remove_filter, check_filter
-from bot.handlers.ban import ban
-from bot.handlers.kick import kick
-from bot.handlers.mute import mute
-from bot.handlers.silent import sban, smute, skick, swarn
-from bot.handlers.temp import tban, tmute, tkick
+from bot.handlers import moderation
 from bot.utils.admin_check import admin_only
 from bot.handlers.utils import tag_all, lock, unlock
 from bot.utils.anti_nsfw import anti_nsfw_filter
