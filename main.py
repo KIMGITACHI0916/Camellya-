@@ -5,6 +5,9 @@ from bot.handlers.help import get_help_handlers
 from bot.handlers import afk
 from bot.handlers.welcome import welcome_handler, goodbye_handler
 from bot.handlers.filters import add_filter, remove_filter, check_filter
+from bot.handlers.ban import ban
+from bot.handlers.kick import kick
+from bot.handlers.mute import mute
 from bot.handlers.silent import sban, smute, skick, swarn
 from bot.handlers.temp import tban, tmute, tkick
 from bot.handlers.utils import tag_all, lock, unlock
@@ -42,6 +45,9 @@ async def main():
     for handler in afk.get_afk_handlers():
         app.add_handler(handler)
 
+    app.add_handler(CommandHandler("kick", admin_only(kick))
+    app.add_handler(CommandHandler("mute", admin_onl(ymute))
+    app.add_handler(CommandHandler("ban", admin_only(ban))
     app.add_handler(CommandHandler("sban", admin_only(sban)))
     app.add_handler(CommandHandler("smute", admin_only(smute)))
     app.add_handler(CommandHandler("skick", admin_only(skick)))
