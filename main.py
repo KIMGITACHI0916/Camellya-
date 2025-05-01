@@ -47,7 +47,7 @@ async def main():
         app.add_handler(handler)
 
     app.add_handler(CommandHandler("kick", admin_only(kick)))
-    app.add_handler(CommandHandler("mute", admin_onl(ymute)))
+    app.add_handler(CommandHandler("mute", admin_only(ymute)))
     app.add_handler(CommandHandler("ban", admin_only(ban)))
     app.add_handler(CommandHandler("sban", admin_only(sban)))
     app.add_handler(CommandHandler("smute", admin_only(smute)))
