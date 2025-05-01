@@ -17,33 +17,47 @@ MONGO_URI = "mongodb+srv://pop300k:tE4m7yVI6DNtXWsk@cluster0.y3knwm0.mongodb.net
 client = MongoClient(MONGO_URI)
 db = client['moderation_bot']
 
+# Admin-only wrapper
+from telegram import Update
+from telegram.ext import ContextTypes
+
+def admin_only(handler):
+    async def wrapper(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        user_id = update.effective_user.id
+        chat = update.effective_chat
+        member = await chat.get_member(user_id)
+        if member.status in ["administrator", "creator"]:
+            return await handler(update, context)
+        else:
+            await update.message.reply_text("Only group admins can use this command.")
+    return wrapper
+
 async def main():
     app = Application.builder().token(TOKEN).build()
-    app.bot_data["approved_admins"] = [123456789]  # Replace with real admin user IDs
 
-    # Register handlers
+    # Register command handlers
     app.add_handler(CommandHandler("start", start))
     for handler in get_help_handlers():
         app.add_handler(handler)
     for handler in afk.get_afk_handlers():
         app.add_handler(handler)
 
-    app.add_handler(CommandHandler("sban", sban))
-    app.add_handler(CommandHandler("smute", smute))
-    app.add_handler(CommandHandler("skick", skick))
-    app.add_handler(CommandHandler("swarn", swarn))
+    app.add_handler(CommandHandler("sban", admin_only(sban)))
+    app.add_handler(CommandHandler("smute", admin_only(smute)))
+    app.add_handler(CommandHandler("skick", admin_only(skick)))
+    app.add_handler(CommandHandler("swarn", admin_only(swarn)))
 
-    app.add_handler(CommandHandler("tban", tban))
-    app.add_handler(CommandHandler("tmute", tmute))
-    app.add_handler(CommandHandler("tkick", tkick))
+    app.add_handler(CommandHandler("tban", admin_only(tban)))
+    app.add_handler(CommandHandler("tmute", admin_only(tmute)))
+    app.add_handler(CommandHandler("tkick", admin_only(tkick)))
 
-    app.add_handler(CommandHandler("addfilter", add_filter))
-    app.add_handler(CommandHandler("removefilter", remove_filter))
+    app.add_handler(CommandHandler("addfilter", admin_only(add_filter)))
+    app.add_handler(CommandHandler("removefilter", admin_only(remove_filter)))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, check_filter))
 
-    app.add_handler(CommandHandler("tagall", tag_all))
-    app.add_handler(CommandHandler("lock", lock))
-    app.add_handler(CommandHandler("unlock", unlock))
+    app.add_handler(CommandHandler("tagall", admin_only(tag_all)))
+    app.add_handler(CommandHandler("lock", admin_only(lock)))
+    app.add_handler(CommandHandler("unlock", admin_only(unlock)))
 
     app.add_handler(MessageHandler(filters.ALL & ~filters.StatusUpdate.ALL, anti_nsfw_filter))
     app.add_handler(MessageHandler(filters.ALL & ~filters.StatusUpdate.ALL, anti_edit_filter))
@@ -57,7 +71,6 @@ async def main():
     await app.updater.start_polling()
     print("Bot is running...")
 
-    # Keeps the bot running
     await asyncio.Event().wait()
 
 if __name__ == '__main__':
