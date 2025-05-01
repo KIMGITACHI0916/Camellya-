@@ -3,6 +3,10 @@ from telegram.ext import ContextTypes
 from datetime import timedelta
 from bot.utils.admin_check import admin_only  # Ensure this exists and is correctly implemented
 
+@admin_only
+async def ban(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    print("BAN COMMAND CALLED")  # Debug
+    
 # --- Basic Commands ---
 
 @admin_only
